@@ -45,3 +45,4 @@ if __name__ == '__main__':
         gripper_control()
     except rospy.ROSInterruptException:
         pass
+        
