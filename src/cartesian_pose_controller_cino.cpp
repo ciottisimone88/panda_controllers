@@ -46,24 +46,24 @@ bool CartesianPoseControllerCino::init(hardware_interface::RobotHW* robot_hardwa
     return false;
   }
 
-  try {
-    auto state_handle = state_interface->getHandle(arm_id + "_robot");
+  // try {
+  //   auto state_handle = state_interface->getHandle(arm_id + "_robot");
 
-    std::array<double, 7> q_start{{0, -M_PI_4, 0, -3 * M_PI_4, 0, M_PI_2, M_PI_4}};
-    for (size_t i = 0; i < q_start.size(); i++) {
-      if (std::abs(state_handle.getRobotState().q_d[i] - q_start[i]) > 0.1) {
-        ROS_ERROR_STREAM(
-            "CartesianPoseControllerCino: Robot is not in the expected starting position for "
-            "running this example. Run `roslaunch franka_example_controllers move_to_start.launch "
-            "robot_ip:=<robot-ip> load_gripper:=<has-attached-gripper>` first.");
-        return false;
-      }
-    }
-  } catch (const hardware_interface::HardwareInterfaceException& e) {
-    ROS_ERROR_STREAM(
-        "CartesianPoseControllerCino: Exception getting state handle: " << e.what());
-    return false;
-  }
+  //   std::array<double, 7> q_start{{0, -M_PI_4, 0, -3 * M_PI_4, 0, M_PI_2, M_PI_4}};
+  //   for (size_t i = 0; i < q_start.size(); i++) {
+  //     if (std::abs(state_handle.getRobotState().q_d[i] - q_start[i]) > 0.1) {
+  //       ROS_ERROR_STREAM(
+  //           "CartesianPoseControllerCino: Robot is not in the expected starting position for "
+  //           "running this example. Run `roslaunch franka_example_controllers move_to_start.launch "
+  //           "robot_ip:=<robot-ip> load_gripper:=<has-attached-gripper>` first.");
+  //       return false;
+  //     }
+  //   }
+  // } catch (const hardware_interface::HardwareInterfaceException& e) {
+  //   ROS_ERROR_STREAM(
+  //       "CartesianPoseControllerCino: Exception getting state handle: " << e.what());
+  //   return false;
+  // }
 
   return true;
 }
