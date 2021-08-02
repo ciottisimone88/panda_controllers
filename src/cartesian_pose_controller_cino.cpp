@@ -87,7 +87,7 @@ void CartesianPoseControllerCino::update(const ros::Time& /* time */,
   cartesian_pose_handle_->setCommand(new_pose);
 }
 
-}  // namespace franka_example_controllers
+}  // namespace panda_controllers
 
-PLUGINLIB_EXPORT_CLASS(franka_example_controllers::CartesianPoseControllerCino,
+PLUGINLIB_EXPORT_CLASS(panda_controllers::CartesianPoseControllerCino,
                        controller_interface::ControllerBase)
