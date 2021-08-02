@@ -48,4 +48,10 @@
    </description>
   </class>
 
+  <class name="panda_controllers/CartesianPoseControllerCino" type="panda_controllers::CartesianPoseControllerCino" base_class_type="controller_interface::ControllerBase">
+   <description>
+      Cartisian pose controller.
+   </description>
+  </class>
+
 </library>

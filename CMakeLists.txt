@@ -70,7 +70,7 @@ add_library(${PROJECT_NAME}
   src/joint_position_controller.cpp #Backstepping controller
   src/cartesian_impedance_controller_softbots.cpp #Backstepping controller
   src/cartesian_impedance_controller_cino.cpp
-
+  src/cartesian_pose_controller_cino.cpp
 ) 
 
 add_dependencies(${PROJECT_NAME}
