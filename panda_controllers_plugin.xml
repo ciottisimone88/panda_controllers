@@ -34,13 +34,18 @@
    <description>
       Joint position controller.
    </description>
-  </class>7
+  </class>
 
-    <class name="panda_controllers/CartesianImpedanceControllerSoftbots" type="panda_controllers::CartesianImpedanceControllerSoftbots" base_class_type="controller_interface::ControllerBase">
+  <class name="panda_controllers/CartesianImpedanceControllerSoftbots" type="panda_controllers::CartesianImpedanceControllerSoftbots" base_class_type="controller_interface::ControllerBase">
    <description>
       Variable impedance controller.
    </description>
   </class>
 
+  <class name="panda_controllers/CartesianImpedanceControllerCino" type="panda_controllers::CartesianImpedanceControllerCino" base_class_type="controller_interface::ControllerBase">
+   <description>
+      Variable impedance controller by Cino.
+   </description>
+  </class>
 
 </library>

@@ -69,6 +69,7 @@ add_library(${PROJECT_NAME}
   src/variable_impedance_controller.cpp #Backstepping controller
   src/joint_position_controller.cpp #Backstepping controller
   src/cartesian_impedance_controller_softbots.cpp #Backstepping controller
+  src/cartesian_impedance_controller_cino.cpp
 
 ) 
 
