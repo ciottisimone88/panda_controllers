@@ -115,13 +115,13 @@ bool CartesianImpedanceControllerCino::init(hardware_interface::RobotHW* robot_h
   cartesian_damping_target_.setIdentity();
 
   
-  cartesian_stiffness_.topLeftCorner(3, 3) << 200*Eigen::Matrix3d::Identity();
-  cartesian_stiffness_.bottomRightCorner(3, 3) << 20*Eigen::Matrix3d::Identity();
+  cartesian_stiffness_.topLeftCorner(3, 3) << default_stiffness_*Eigen::Matrix3d::Identity();
+  cartesian_stiffness_.bottomRightCorner(3, 3) << (default_stiffness_/damping_scale_factor_)*Eigen::Matrix3d::Identity();
   cartesian_stiffness_target_ = cartesian_stiffness_;
   // Damping ratio = 1
 
-  cartesian_damping_.topLeftCorner(3, 3) = 2.0 * sqrt(200)*Eigen::Matrix3d::Identity();
-  cartesian_damping_.bottomRightCorner(3, 3) = 2.0 * sqrt(20)*Eigen::Matrix3d::Identity();
+  cartesian_damping_.topLeftCorner(3, 3) = 2.0 * default_stiffness_*Eigen::Matrix3d::Identity();
+  cartesian_damping_.bottomRightCorner(3, 3) = 2.0 * (default_stiffness_/damping_scale_factor_)*Eigen::Matrix3d::Identity();
   cartesian_damping_target_ = cartesian_damping_;
 
   return true;
