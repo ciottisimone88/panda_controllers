@@ -286,20 +286,7 @@ void CartesianImpedanceControllerCino::equilibriumPoseCallback(
     orientation_d_target_.coeffs() << -orientation_d_target_.coeffs();
   }
 
-  /*std::cout << "POSITION x= " << position_d_target_(0)
-            << " y=" << position_d_target_(1)
-            << " z=" << position_d_target_(2) << std::endl;*/
-
-
   Eigen::AngleAxisd aa_orientation_recieved(orientation_d_target_);
-  // std::cout << "ORIENTATION AA RECEIVED x= " << aa_orientation_recieved.axis()(0)
-  //           << " y=" << aa_orientation_recieved.axis()(1)
-  //           << " z=" << aa_orientation_recieved.axis()(2)
-  //           << " angle= " << aa_orientation_recieved.angle() << std::endl;
-
-   
-
-
 }
 
 }  // namespace panda_controllers
