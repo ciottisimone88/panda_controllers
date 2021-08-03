@@ -66,6 +66,10 @@ class CartesianImpedanceControllerCino : public controller_interface::MultiInter
   ros::Subscriber sub_desired_stiffness_;
   void desiredStiffnessCallback(const geometry_msgs::Vector3StampedConstPtr& msg);
 
+  // Damping/Stiffness ratio subscriber (i.e., dam = stiff * ratio)
+  ros::Subscriber sub_damp_stiff_desired_ratio_;
+  void desiredDampStiffRatioCallback(const double damp_stiff_ratio);
+
   // Equilibrium pose subscriber
   ros::Subscriber sub_equilibrium_pose_;
   void equilibriumPoseCallback(const geometry_msgs::PoseStampedConstPtr& msg);
