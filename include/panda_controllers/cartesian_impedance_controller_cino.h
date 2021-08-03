@@ -69,7 +69,7 @@ class CartesianImpedanceControllerCino : public controller_interface::MultiInter
 
   // Rotational stiffness scale factor subscriber
   ros::Subscriber sub_desired_rotational_stiffness_scale_factor_;
-  void desiredRotationalStiffnessScaleFactorCallback(const std_msgs::Float64ConstPtr& msg);
+  void desiredRotationalStiffnessScaleFactorCallback(const std_msgs::Float64::ConstPtr& msg);
 
   // Equilibrium pose subscriber
   ros::Subscriber sub_equilibrium_pose_;

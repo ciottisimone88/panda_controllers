@@ -274,7 +274,7 @@ void CartesianImpedanceControllerCino::desiredStiffnessCallback(
   cartesian_damping_target_(5,5) = 2.0 * sqrt(msg->vector.z/rotational_stiffness_scale_factor_);
 }
 
-void CartesianImpedanceControllerCino::desiredRotationalStiffnessScaleFactorCallback(const std_msgs::Float64ConstPtr& msg) {
+void CartesianImpedanceControllerCino::desiredRotationalStiffnessScaleFactorCallback(const std_msgs::Float64::ConstPtr& msg) {
   
   rotational_stiffness_scale_factor_ = static_cast<double>msg->data;
 
