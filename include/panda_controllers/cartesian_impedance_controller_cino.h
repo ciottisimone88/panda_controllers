@@ -44,6 +44,7 @@ class CartesianImpedanceControllerCino : public controller_interface::MultiInter
   double filter_params_{0.1};
   double nullspace_stiffness_{5.0};
   double nullspace_stiffness_target_{5.0};
+  double damping_scale_factor_{10.0};
   const double delta_tau_max_{1.0};
   Eigen::Matrix<double, 6, 6> cartesian_stiffness_;
   Eigen::Matrix<double, 6, 6> cartesian_stiffness_target_;
@@ -61,24 +62,20 @@ class CartesianImpedanceControllerCino : public controller_interface::MultiInter
   ros::Time lastTime;
   ros::Duration deltaT;
 
-
   // Stiffness profile subscriber
   ros::Subscriber sub_desired_stiffness_;
   void desiredStiffnessCallback(const geometry_msgs::Vector3StampedConstPtr& msg);
 
-  // Damping/Stiffness ratio subscriber (i.e., dam = stiff * ratio)
-  ros::Subscriber sub_damp_stiff_desired_ratio_;
-  void desiredDampStiffRatioCallback(const double damp_stiff_ratio);
+  // Damping scale factor subscriber (i.e., damping = stiffness / scale_factor)
+  ros::Subscriber sub_desired_damping_scale_factor_;
+  void desiredDampingScaleFactorCallback(const double msg);
 
   // Equilibrium pose subscriber
   ros::Subscriber sub_equilibrium_pose_;
   void equilibriumPoseCallback(const geometry_msgs::PoseStampedConstPtr& msg);
 
   // Equilibrium pose subscriber
-  ros::Publisher pub_endeffector_pose_;
-
-  
-  
+  ros::Publisher pub_endeffector_pose_;  
 };
 
 }  // namespace franka_example_controllers
