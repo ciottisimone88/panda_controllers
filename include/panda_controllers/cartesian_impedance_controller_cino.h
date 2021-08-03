@@ -45,8 +45,8 @@ class CartesianImpedanceControllerCino : public controller_interface::MultiInter
   double filter_params_{0.1};
   double nullspace_stiffness_{5.0};
   double nullspace_stiffness_target_{5.0};
-  double rotational_stiffness_scale_factor_{10.0};
-  const double default_stiffness_{200.0};
+  double stiffness_scale_factor_{10.0};
+  const double kDefaultStiffness{200.0};
   const double delta_tau_max_{1.0};
   Eigen::Matrix<double, 6, 6> cartesian_stiffness_;
   Eigen::Matrix<double, 6, 6> cartesian_stiffness_target_;
@@ -68,9 +68,10 @@ class CartesianImpedanceControllerCino : public controller_interface::MultiInter
   ros::Subscriber sub_desired_stiffness_;
   void desiredStiffnessCallback(const geometry_msgs::Vector3StampedConstPtr& msg);
 
-  // Rotational stiffness scale factor subscriber
-  ros::Subscriber sub_desired_rotational_stiffness_scale_factor_;
-  void desiredRotationalStiffnessScaleFactorCallback(const std_msgs::Float64::ConstPtr& msg);
+  // Orientation stiffness scale factor subscriber
+  // orientation stiffness = linear stiffness / scale factor
+  ros::Subscriber sub_stiffness_scale_factor_;
+  void stiffnessScaleFactorCallback(const std_msgs::Float64::ConstPtr& msg);
 
   // Equilibrium pose subscriber
   ros::Subscriber sub_equilibrium_pose_;

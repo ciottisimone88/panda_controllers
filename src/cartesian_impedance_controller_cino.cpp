@@ -34,8 +34,8 @@ bool CartesianImpedanceControllerCino::init(hardware_interface::RobotHW* robot_h
       name_space+"/desired_stiffness", 1, &CartesianImpedanceControllerCino::desiredStiffnessCallback, this,
       ros::TransportHints().reliable().tcpNoDelay());
 
-  sub_desired_rotational_stiffness_scale_factor_ = node_handle.subscribe(
-      name_space+"/desired_rotational_stiffness_scale_factor", 1, &CartesianImpedanceControllerCino::desiredRotationalStiffnessScaleFactorCallback, this,
+  sub_stiffness_scale_factor_ = node_handle.subscribe(
+      name_space+"/stiffness_scale_factor", 1, &CartesianImpedanceControllerCino::stiffnessScaleFactorCallback, this,
       ros::TransportHints().reliable().tcpNoDelay());
 
   pub_endeffector_pose_ = node_handle.advertise<geometry_msgs::PoseStamped>("/franka_ee_pose", 1);
@@ -115,13 +115,13 @@ bool CartesianImpedanceControllerCino::init(hardware_interface::RobotHW* robot_h
   cartesian_damping_target_.setIdentity();
 
   
-  cartesian_stiffness_.topLeftCorner(3, 3) << default_stiffness_*Eigen::Matrix3d::Identity();
-  cartesian_stiffness_.bottomRightCorner(3, 3) << (default_stiffness_/rotational_stiffness_scale_factor_)*Eigen::Matrix3d::Identity();
+  cartesian_stiffness_.topLeftCorner(3, 3) << kDefaultStiffness*Eigen::Matrix3d::Identity();
+  cartesian_stiffness_.bottomRightCorner(3, 3) << (kDefaultStiffness/stiffness_scale_factor_)*Eigen::Matrix3d::Identity();
   cartesian_stiffness_target_ = cartesian_stiffness_;
   // Damping ratio = 1
 
-  cartesian_damping_.topLeftCorner(3, 3) = 2.0 * sqrt(default_stiffness_)*Eigen::Matrix3d::Identity();
-  cartesian_damping_.bottomRightCorner(3, 3) = 2.0 * sqrt(default_stiffness_/rotational_stiffness_scale_factor_)*Eigen::Matrix3d::Identity();
+  cartesian_damping_.topLeftCorner(3, 3) = 2.0 * sqrt(kDefaultStiffness)*Eigen::Matrix3d::Identity();
+  cartesian_damping_.bottomRightCorner(3, 3) = 2.0 * sqrt(kDefaultStiffness/stiffness_scale_factor_)*Eigen::Matrix3d::Identity();
   cartesian_damping_target_ = cartesian_damping_;
 
   return true;
@@ -261,7 +261,7 @@ void CartesianImpedanceControllerCino::desiredStiffnessCallback(
   cartesian_stiffness_target_(1,1) = msg->vector.y;
   cartesian_stiffness_target_(2,2) = msg->vector.z;
   
-  cartesian_stiffness_target_.bottomRightCorner(3, 3) << cartesian_stiffness_target_.topLeftCorner(3, 3)/rotational_stiffness_scale_factor_;
+  cartesian_stiffness_target_.bottomRightCorner(3, 3) << cartesian_stiffness_target_.topLeftCorner(3, 3)/stiffness_scale_factor_;
   cartesian_damping_target_.setIdentity();
   // Damping ratio = 1
 
@@ -269,20 +269,21 @@ void CartesianImpedanceControllerCino::desiredStiffnessCallback(
   cartesian_damping_target_(1,1) = 2.0 * sqrt(msg->vector.y);
   cartesian_damping_target_(2,2) = 2.0 * sqrt(msg->vector.z);
   
-  cartesian_damping_target_(3,3) = 2.0 * sqrt(msg->vector.x/rotational_stiffness_scale_factor_);
-  cartesian_damping_target_(4,4) = 2.0 * sqrt(msg->vector.y/rotational_stiffness_scale_factor_);
-  cartesian_damping_target_(5,5) = 2.0 * sqrt(msg->vector.z/rotational_stiffness_scale_factor_);
+  cartesian_damping_target_(3,3) = 2.0 * sqrt(msg->vector.x/stiffness_scale_factor_);
+  cartesian_damping_target_(4,4) = 2.0 * sqrt(msg->vector.y/stiffness_scale_factor_);
+  cartesian_damping_target_(5,5) = 2.0 * sqrt(msg->vector.z/stiffness_scale_factor_);
 }
 
-void CartesianImpedanceControllerCino::desiredRotationalStiffnessScaleFactorCallback(const std_msgs::Float64::ConstPtr& msg) {
+void CartesianImpedanceControllerCino::stiffnessScaleFactorCallback(
+  const std_msgs::Float64::ConstPtr& msg) {
   
-  rotational_stiffness_scale_factor_ = static_cast<double>(msg->data);
+  stiffness_scale_factor_ = static_cast<double>(msg->data);
 
-  cartesian_stiffness_target_.bottomRightCorner(3, 3) << cartesian_stiffness_target_.topLeftCorner(3, 3)/rotational_stiffness_scale_factor_;
+  cartesian_stiffness_target_.bottomRightCorner(3, 3) << cartesian_stiffness_target_.topLeftCorner(3, 3)/stiffness_scale_factor_;
 
-  cartesian_damping_target_(3,3) = 2.0 * sqrt(cartesian_stiffness_target_(0,0)/rotational_stiffness_scale_factor_);
-  cartesian_damping_target_(4,4) = 2.0 * sqrt(cartesian_stiffness_target_(1,1)/rotational_stiffness_scale_factor_);
-  cartesian_damping_target_(5,5) = 2.0 * sqrt(cartesian_stiffness_target_(2,2)/rotational_stiffness_scale_factor_);
+  cartesian_damping_target_(3,3) = 2.0 * sqrt(cartesian_stiffness_target_(0,0)/stiffness_scale_factor_);
+  cartesian_damping_target_(4,4) = 2.0 * sqrt(cartesian_stiffness_target_(1,1)/stiffness_scale_factor_);
+  cartesian_damping_target_(5,5) = 2.0 * sqrt(cartesian_stiffness_target_(2,2)/stiffness_scale_factor_);
 }
 
 void CartesianImpedanceControllerCino::equilibriumPoseCallback(
