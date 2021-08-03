@@ -276,7 +276,7 @@ void CartesianImpedanceControllerCino::desiredStiffnessCallback(
 
 void CartesianImpedanceControllerCino::desiredRotationalStiffnessScaleFactorCallback(const std_msgs::Float64::ConstPtr& msg) {
   
-  rotational_stiffness_scale_factor_ = static_cast<double>msg->data;
+  rotational_stiffness_scale_factor_ = static_cast<double>(msg->data);
 
   cartesian_stiffness_target_.bottomRightCorner(3, 3) << cartesian_stiffness_target_.topLeftCorner(3, 3)/rotational_stiffness_scale_factor_;
 
