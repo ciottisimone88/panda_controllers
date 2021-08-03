@@ -280,9 +280,9 @@ void CartesianImpedanceControllerCino::desiredRotationalStiffnessScaleFactorCall
 
   cartesian_stiffness_target_.bottomRightCorner(3, 3) << cartesian_stiffness_target_.topLeftCorner(3, 3)/rotational_stiffness_scale_factor_;
 
-  cartesian_damping_target_(3,3) = 2.0 * sqrt(msg->vector.x/rotational_stiffness_scale_factor_);
-  cartesian_damping_target_(4,4) = 2.0 * sqrt(msg->vector.y/rotational_stiffness_scale_factor_);
-  cartesian_damping_target_(5,5) = 2.0 * sqrt(msg->vector.z/rotational_stiffness_scale_factor_);
+  cartesian_damping_target_(3,3) = 2.0 * sqrt(cartesian_stiffness_target_(0,0)/rotational_stiffness_scale_factor_);
+  cartesian_damping_target_(4,4) = 2.0 * sqrt(cartesian_stiffness_target_(1,1)/rotational_stiffness_scale_factor_);
+  cartesian_damping_target_(5,5) = 2.0 * sqrt(cartesian_stiffness_target_(2,2)/rotational_stiffness_scale_factor_);
 }
 
 void CartesianImpedanceControllerCino::equilibriumPoseCallback(
