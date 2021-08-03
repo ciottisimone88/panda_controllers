@@ -34,6 +34,10 @@ bool CartesianImpedanceControllerCino::init(hardware_interface::RobotHW* robot_h
       name_space+"/desired_stiffness", 1, &CartesianImpedanceControllerCino::desiredStiffnessCallback, this,
       ros::TransportHints().reliable().tcpNoDelay());
 
+  sub_desired_damping_scale_factor_ = node_handle.subscribe(
+      name_space+"/desired_damping_scale_factor", 1, &CartesianImpedanceControllerCino::desiredDampingScaleFactorCallback, this,
+      ros::TransportHints().reliable().tcpNoDelay());
+
   pub_endeffector_pose_ = node_handle.advertise<geometry_msgs::PoseStamped>("/franka_ee_pose", 1);
 
   std::string arm_id;

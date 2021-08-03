@@ -45,6 +45,7 @@ class CartesianImpedanceControllerCino : public controller_interface::MultiInter
   double nullspace_stiffness_{5.0};
   double nullspace_stiffness_target_{5.0};
   double damping_scale_factor_{10.0};
+  const double default_stiffness_{200.0};
   const double delta_tau_max_{1.0};
   Eigen::Matrix<double, 6, 6> cartesian_stiffness_;
   Eigen::Matrix<double, 6, 6> cartesian_stiffness_target_;
