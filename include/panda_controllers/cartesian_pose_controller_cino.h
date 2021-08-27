@@ -29,6 +29,18 @@ class CartesianPoseControllerCino
   std::unique_ptr<franka_hw::FrankaCartesianPoseHandle> cartesian_pose_handle_;
   ros::Duration elapsed_time_;
   std::array<double, 16> initial_pose_{};
+  Eigen::Vector3d position_d_;
+  Eigen::Quaterniond orientation_d_;
+  Eigen::Vector3d position_d_target_;
+  Eigen::Quaterniond orientation_d_target_;
+  double filter_params_{0.1};
+
+  // Equilibrium pose subscriber
+  ros::Subscriber sub_equilibrium_pose_;
+  void equilibriumPoseCallback(const geometry_msgs::PoseStampedConstPtr& msg);
+
+  // Equilibrium pose subscriber
+  ros::Publisher pub_endeffector_pose_;  
 };
 
 }  // namespace panda_controllers

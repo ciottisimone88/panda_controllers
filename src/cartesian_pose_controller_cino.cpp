@@ -40,51 +40,61 @@ bool CartesianPoseControllerCino::init(hardware_interface::RobotHW* robot_hardwa
     return false;
   }
 
-  auto state_interface = robot_hardware->get<franka_hw::FrankaStateInterface>();
-  if (state_interface == nullptr) {
-    ROS_ERROR("CartesianPoseControllerCino: Could not get state interface from hardware");
-    return false;
-  }
+  sub_equilibrium_pose_ = node_handle.subscribe(
+      name_space+"/equilibrium_pose", 1, &CartesianImpedanceControllerCino::equilibriumPoseCallback, this,
+      ros::TransportHints().reliable().tcpNoDelay());
 
-  // try {
-  //   auto state_handle = state_interface->getHandle(arm_id + "_robot");
-
-  //   std::array<double, 7> q_start{{0, -M_PI_4, 0, -3 * M_PI_4, 0, M_PI_2, M_PI_4}};
-  //   for (size_t i = 0; i < q_start.size(); i++) {
-  //     if (std::abs(state_handle.getRobotState().q_d[i] - q_start[i]) > 0.1) {
-  //       ROS_ERROR_STREAM(
-  //           "CartesianPoseControllerCino: Robot is not in the expected starting position for "
-  //           "running this example. Run `roslaunch franka_example_controllers move_to_start.launch "
-  //           "robot_ip:=<robot-ip> load_gripper:=<has-attached-gripper>` first.");
-  //       return false;
-  //     }
-  //   }
-  // } catch (const hardware_interface::HardwareInterfaceException& e) {
-  //   ROS_ERROR_STREAM(
-  //       "CartesianPoseControllerCino: Exception getting state handle: " << e.what());
-  //   return false;
-  // }
+  pub_endeffector_pose_ = node_handle.advertise<geometry_msgs::PoseStamped>("/franka_ee_pose", 1);
 
   return true;
 }
 
 void CartesianPoseControllerCino::starting(const ros::Time& /* time */) {
+  // get roboto initial pose
   initial_pose_ = cartesian_pose_handle_->getRobotState().O_T_EE_d;
-  elapsed_time_ = ros::Duration(0.0);
+
+  // set equilibrium point to current state
+  position_d_        << initial_pose_[12], initial_pose_[13], initial_pose_[14];
+  position_d_target_ = position_d_;
 }
 
 void CartesianPoseControllerCino::update(const ros::Time& /* time */,
                                             const ros::Duration& period) {
-  elapsed_time_ += period;
+  // get robot pose
+  std::array<double, 16> pose = cartesian_pose_handle_->getRobotState().O_T_EE_d;
+  // convert to Eigen
+  Eigen::Vector3d position;
+  position << pose[12], pose[13], pose[14];
 
-  double radius = 0.3;
-  double angle = M_PI / 4 * (1 - std::cos(M_PI / 5.0 * elapsed_time_.toSec()));
-  double delta_x = radius * std::sin(angle);
-  double delta_z = radius * (std::cos(angle) - 1);
-  std::array<double, 16> new_pose = initial_pose_;
-  new_pose[12] -= delta_x;
-  new_pose[14] -= delta_z;
+  geometry_msgs::PoseStamped msg_endeffector_pose;
+
+  msg_endeffector_pose.pose.position.x = position(0);
+  msg_endeffector_pose.pose.position.y = position(1);
+  msg_endeffector_pose.pose.position.z = position(2);
+
+  pub_endeffector_pose_.publish(msg_endeffector_pose);
+  
+  position_d_ = filter_params_ * position_d_target_ + (1.0 - filter_params_) * position_d_;
+  
+  std::array<double, 16> new_pose{pose};
+  new_pose[12] = position_d_.x();
+  new_pose[13] = position_d_.y();
+  new_pose[14] = position_d_.z();
+  
   cartesian_pose_handle_->setCommand(new_pose);
+}
+
+void CartesianPoseControllerCino::equilibriumPoseCallback(
+    const geometry_msgs::PoseStampedConstPtr& msg) {
+  position_d_target_ << msg->pose.position.x, msg->pose.position.y, msg->pose.position.z;
+
+  // Eigen::Quaterniond last_orientation_d_target(orientation_d_target_);
+  // orientation_d_target_.coeffs() << msg->pose.orientation.x, msg->pose.orientation.y,
+  //     msg->pose.orientation.z, msg->pose.orientation.w;
+
+  // if (last_orientation_d_target.coeffs().dot(orientation_d_target_.coeffs()) < 0.0) {
+  //   orientation_d_target_.coeffs() << -orientation_d_target_.coeffs();
+  // }
 }
 
 }  // namespace panda_controllers
