@@ -40,6 +40,13 @@ bool CartesianPoseControllerCino::init(hardware_interface::RobotHW* robot_hardwa
     return false;
   }
 
+  // Name space extraction for add a prefix to the topic name
+  int n = 0;
+  std::string name_space;
+  name_space = node_handle.getNamespace();
+  n = name_space.find("/", 2);
+  name_space = name_space.substr(0,n);
+
   sub_equilibrium_pose_ = node_handle.subscribe(
       name_space+"/equilibrium_pose", 1, &CartesianPoseControllerCino::equilibriumPoseCallback, this,
       ros::TransportHints().reliable().tcpNoDelay());
