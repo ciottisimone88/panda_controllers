@@ -91,8 +91,6 @@ joint_position_controller:
         - panda_joint6
         - panda_joint7
 
-
-
 cartesian_impedance_controller_softbots:
     type: panda_controllers/CartesianImpedanceControllerSoftbots
     arm_id: panda
@@ -105,7 +103,22 @@ cartesian_impedance_controller_softbots:
         - panda_joint6
         - panda_joint7
 
+cartesian_impedance_controller_cino:
+    type: panda_controllers/CartesianImpedanceControllerCino
+    arm_id: panda
+    joint_names:
+        - panda_joint1
+        - panda_joint2
+        - panda_joint3
+        - panda_joint4
+        - panda_joint5
+        - panda_joint6
+        - panda_joint7
 
+cartesian_pose_controller_cino:
+    type: panda_controllers/CartesianPoseControllerCino
+    arm_id: panda
+    
 
 
 

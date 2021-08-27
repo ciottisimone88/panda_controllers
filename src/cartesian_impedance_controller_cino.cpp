@@ -128,6 +128,9 @@ bool CartesianImpedanceControllerCino::init(hardware_interface::RobotHW* robot_h
 }
 
 void CartesianImpedanceControllerCino::starting(const ros::Time& /*time*/) {
+  
+  ROS_INFO("Cartesian impedance controller Cino starting...");
+  
   // compute initial velocity with jacobian and set x_attractor and q_d_nullspace
   // to initial configuration
   franka::RobotState initial_state = state_handle_->getRobotState();

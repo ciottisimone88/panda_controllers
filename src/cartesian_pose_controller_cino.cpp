@@ -57,6 +57,9 @@ bool CartesianPoseControllerCino::init(hardware_interface::RobotHW* robot_hardwa
 }
 
 void CartesianPoseControllerCino::starting(const ros::Time& /* time */) {
+  
+  ROS_INFO("Cartesian pose controller Cino starting...");
+
   // get roboto initial pose
   initial_pose_ = cartesian_pose_handle_->getRobotState().O_T_EE_d;
 
