@@ -41,7 +41,7 @@ bool CartesianPoseControllerCino::init(hardware_interface::RobotHW* robot_hardwa
   }
 
   sub_equilibrium_pose_ = node_handle.subscribe(
-      name_space+"/equilibrium_pose", 1, &CartesianImpedanceControllerCino::equilibriumPoseCallback, this,
+      name_space+"/equilibrium_pose", 1, &CartesianPoseControllerCino::equilibriumPoseCallback, this,
       ros::TransportHints().reliable().tcpNoDelay());
 
   pub_endeffector_pose_ = node_handle.advertise<geometry_msgs::PoseStamped>("/franka_ee_pose", 1);
