@@ -62,7 +62,8 @@ void CartesianPoseControllerCino::starting(const ros::Time& /* time */) {
 
   // get roboto initial pose
   initial_pose_ = cartesian_pose_handle_->getRobotState().O_T_EE_d;
-
+  // get initial time
+  elapsed_time_ = ros::Duration(0.0);
   // set equilibrium point to current state
   position_d_        << initial_pose_[12], initial_pose_[13], initial_pose_[14];
   position_d_target_ = position_d_;
@@ -72,19 +73,12 @@ void CartesianPoseControllerCino::update(const ros::Time& /* time */,
                                             const ros::Duration& period) {
   // get robot pose
   std::array<double, 16> pose = cartesian_pose_handle_->getRobotState().O_T_EE_d;
-  // convert to Eigen
-  Eigen::Vector3d position;
-  position << pose[12], pose[13], pose[14];
-
-  geometry_msgs::PoseStamped msg_endeffector_pose;
-
-  msg_endeffector_pose.pose.position.x = position(0);
-  msg_endeffector_pose.pose.position.y = position(1);
-  msg_endeffector_pose.pose.position.z = position(2);
-
-  pub_endeffector_pose_.publish(msg_endeffector_pose);
   
-  position_d_ = filter_params_ * position_d_target_ + (1.0 - filter_params_) * position_d_;
+  geometry_msgs::PoseStamped msg_endeffector_pose;
+  msg_endeffector_pose.pose.position.x = pose[12];
+  msg_endeffector_pose.pose.position.y = pose[13];
+  msg_endeffector_pose.pose.position.z = pose[14];
+  pub_endeffector_pose_.publish(msg_endeffector_pose);
   
   std::array<double, 16> new_pose{pose};
   new_pose[12] = position_d_.x();
@@ -92,6 +86,8 @@ void CartesianPoseControllerCino::update(const ros::Time& /* time */,
   new_pose[14] = position_d_.z();
   
   cartesian_pose_handle_->setCommand(new_pose);
+
+  position_d_ = filter_params_ * position_d_target_ + (1.0 - filter_params_) * position_d_;
 }
 
 void CartesianPoseControllerCino::equilibriumPoseCallback(
